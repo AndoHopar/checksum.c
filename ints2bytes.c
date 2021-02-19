@@ -1,55 +1,22 @@
-/********************************/
-/* Program Name:  checksum      */
-/* Author: Andreas Hindoyan     */
-/* Date:                        */
-/********************************/
-/* Description:                 */
-/* Validation Checks:           */
-/* Enhancements:                */
-/********************************/
-
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #define max_int (255)
-#define byte unsigned char
+#define byte char
+
 
 int main (int argc, char * argv[], char ** envp) {
 
-
-  int count = 10;
-  int sum = 0;  
-  int quotient;
-  int remainder;
-  int retval;
-  byte checksum; 
-  byte complement;
-  
-  byte header[10];
-  
-  
-  retval = read(STDIN_FILENO, &header, 10);
-  
-  
-  for (int c = 0; c < count; c++ ) {
-  if ( c == 5 ) {
-  checksum = header[c];
-  header[c] = 0;
+   int input;
+   byte value;
+   while  ( ! feof(stdin) ) {
+     scanf("%d", &input);
+     if (input > max_int) {
+       fprintf(stderr, "Error in input!\n");
+       exit(1);
+     }
+     value = (byte) input;
+     write(1, &value, sizeof(byte));
   }
-  sum += header[c];
-  }
-  quotient = (sum / (max_int + 1));             
-  remainder = (sum % (max_int + 1 ));            
-  sum = quotient + remainder;
-  complement = max_int - sum;
-    
-  
-
-  fprintf(stdout, "Stored Checksum: %d, Computed Checksum: %d\n", checksum, complement);
-  if (checksum != complement ) {
-    fprintf(stderr, "Error Detected!\n"); 
-    return 1;
-  }
-  return 0;
 }
